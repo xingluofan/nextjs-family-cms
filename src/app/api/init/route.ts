@@ -12,7 +12,8 @@ export async function POST(request: NextRequest) {
           debug: {
             message: 'Database connection check returned false',
             environment: process.env.NODE_ENV,
-            postgresUrl: process.env.PRISMA_DATABASE_URL ? 'SET' : 'NOT_SET'
+            storageUrl: process.env.STORAGE_URL ? 'SET' : 'NOT_SET',
+            databaseUrl: process.env.DATABASE_URL ? 'SET' : 'NOT_SET'
           }
         },
         { status: 500 }
@@ -40,7 +41,8 @@ export async function POST(request: NextRequest) {
           message: error instanceof Error ? error.message : String(error),
           stack: error instanceof Error ? error.stack : undefined,
           environment: process.env.NODE_ENV,
-          postgresUrl: process.env.PRISMA_DATABASE_URL ? 'SET' : 'NOT_SET'
+          storageUrl: process.env.STORAGE_URL ? 'SET' : 'NOT_SET',
+            databaseUrl: process.env.DATABASE_URL ? 'SET' : 'NOT_SET'
         }
       },
       { status: 500 }
@@ -65,7 +67,8 @@ export async function GET(request: NextRequest) {
           message: error instanceof Error ? error.message : String(error),
           stack: error instanceof Error ? error.stack : undefined,
           environment: process.env.NODE_ENV,
-          postgresUrl: process.env.PRISMA_DATABASE_URL ? 'SET' : 'NOT_SET'
+          storageUrl: process.env.STORAGE_URL ? 'SET' : 'NOT_SET',
+            databaseUrl: process.env.DATABASE_URL ? 'SET' : 'NOT_SET'
         }
       },
       { status: 500 }

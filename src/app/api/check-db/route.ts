@@ -10,14 +10,16 @@ export async function GET() {
     // 检查环境变量
     const envCheckStart = Date.now();
     const envVars = {
-      PRISMA_DATABASE_URL: process.env.PRISMA_DATABASE_URL ? 'SET' : 'NOT_SET',
-      DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT_SET'
+      STORAGE_URL: process.env.STORAGE_URL ? 'SET' : 'NOT_SET',
+      DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT_SET',
+      POSTGRES_URL: process.env.POSTGRES_URL ? 'SET' : 'NOT_SET'
     };
     
     // 确定使用的连接变量
-    const connectionString = process.env.PRISMA_DATABASE_URL || process.env.DATABASE_URL;
-    const selectedVariable = process.env.PRISMA_DATABASE_URL ? 'PRISMA_DATABASE_URL' : 
-                           process.env.DATABASE_URL ? 'DATABASE_URL' : 'NONE';
+    const connectionString = process.env.STORAGE_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL;
+    const selectedVariable = process.env.STORAGE_URL ? 'STORAGE_URL' : 
+                           process.env.DATABASE_URL ? 'DATABASE_URL' : 
+                           process.env.POSTGRES_URL ? 'POSTGRES_URL' : 'NONE';
     
     const startsWithPostgres = connectionString ? connectionString.startsWith('postgres') : false;
     const envCheckMs = Date.now() - envCheckStart;
