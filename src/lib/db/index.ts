@@ -1,8 +1,8 @@
 import { createClient } from '@vercel/postgres';
 
 // 数据库连接配置
-// 使用Vercel Storage配置的环境变量
-const connectionString = process.env.PRISMA_DATABASE_URL || process.env.DATABASE_URL;
+// 使用标准PostgreSQL连接字符串，避免Prisma Accelerate格式
+const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 export const db = createClient({
   connectionString
 });
