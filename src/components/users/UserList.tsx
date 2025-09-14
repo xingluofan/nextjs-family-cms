@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Table, Card, Space, Tag, message, Button } from 'antd'
-import { UserOutlined, ReloadOutlined } from '@ant-design/icons'
+import { Table, Card, Space, Tag, message, Button, Popconfirm, Modal } from 'antd'
+import { UserOutlined, ReloadOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import type { UserResponse } from '@/lib/users/service'
 import { format } from 'date-fns'
@@ -10,9 +10,10 @@ import { zhCN } from 'date-fns/locale'
 
 interface UserListProps {
   refreshTrigger?: number
+  onEdit?: (user: UserResponse) => void
 }
 
-export default function UserList({ refreshTrigger }: UserListProps) {
+export default function UserList({ refreshTrigger, onEdit }: UserListProps) {
   const [users, setUsers] = useState<UserResponse[]>([])
   const [loading, setLoading] = useState(false)
 
@@ -32,6 +33,25 @@ export default function UserList({ refreshTrigger }: UserListProps) {
       message.error('获取用户列表失败，请稍后重试')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await fetch(`/api/users/${id}`, {
+        method: 'DELETE',
+      })
+      const result = await response.json()
+
+      if (result.success) {
+        message.success('删除用户成功')
+        fetchUsers() // 重新获取用户列表
+      } else {
+        message.error(result.error || '删除用户失败')
+      }
+    } catch (error) {
+      console.error('删除用户失败:', error)
+      message.error('删除用户失败，请稍后重试')
     }
   }
 
@@ -96,6 +116,39 @@ export default function UserList({ refreshTrigger }: UserListProps) {
         )
       },
       sorter: (a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime(),
+    },
+    {
+      title: '操作',
+      key: 'action',
+      width: 120,
+      render: (_, record) => (
+        <Space size="small">
+          <Button
+            type="link"
+            icon={<EditOutlined />}
+            onClick={() => onEdit?.(record)}
+            size="small"
+          >
+            编辑
+          </Button>
+          <Popconfirm
+            title="确认删除"
+            description={`确定要删除用户 "${record.username}" 吗？`}
+            onConfirm={() => handleDelete(record.id)}
+            okText="确定"
+            cancelText="取消"
+          >
+            <Button
+              type="link"
+              danger
+              icon={<DeleteOutlined />}
+              size="small"
+            >
+              删除
+            </Button>
+          </Popconfirm>
+        </Space>
+      ),
     },
   ]
 

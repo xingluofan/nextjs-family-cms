@@ -8,6 +8,13 @@ export interface CreateUserData {
   name?: string
 }
 
+export interface UpdateUserData {
+  username?: string
+  password?: string
+  email?: string
+  name?: string
+}
+
 export interface UserResponse {
   id: number
   username: string
@@ -91,7 +98,7 @@ export async function getUserById(id: number): Promise<UserResponse | null> {
 }
 
 /**
- * 根据用户名获取用户
+ * 根据用户名获取用户信息
  * @param username 用户名
  * @returns 用户信息（不包含密码）
  */
@@ -103,6 +110,28 @@ export async function getUserByUsername(username: string): Promise<UserResponse 
       username: true,
       email: true,
       name: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  })
+  
+  return user
+}
+
+/**
+ * 根据用户名获取用户信息（包含密码，用于登录验证）
+ * @param username 用户名
+ * @returns 用户信息（包含密码）
+ */
+export async function getUserByUsernameWithPassword(username: string): Promise<(UserResponse & { password: string }) | null> {
+  const user = await prisma.user.findUnique({
+    where: { username },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      name: true,
+      password: true,
       createdAt: true,
       updatedAt: true,
     },
@@ -137,4 +166,58 @@ export async function isEmailExists(email: string): Promise<boolean> {
   })
   
   return !!user
+}
+
+/**
+ * 更新用户
+ * @param id 用户ID
+ * @param userData 更新的用户数据
+ * @returns 更新后的用户信息（不包含密码）
+ */
+export async function updateUser(id: number, userData: UpdateUserData): Promise<UserResponse> {
+  const updateData: {
+    username?: string
+    email?: string
+    name?: string
+    password?: string
+  } = {}
+  
+  // 只更新提供的字段
+  if (userData.username !== undefined) {
+    updateData.username = userData.username
+  }
+  if (userData.email !== undefined) {
+    updateData.email = userData.email
+  }
+  if (userData.name !== undefined) {
+    updateData.name = userData.name
+  }
+  if (userData.password !== undefined) {
+    updateData.password = await hashPassword(userData.password)
+  }
+  
+  const user = await prisma.user.update({
+    where: { id },
+    data: updateData,
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      name: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  })
+  
+  return user
+}
+
+/**
+ * 删除用户
+ * @param id 用户ID
+ */
+export async function deleteUser(id: number): Promise<void> {
+  await prisma.user.delete({
+    where: { id },
+  })
 }
