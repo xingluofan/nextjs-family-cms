@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { message } from 'antd'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
 interface User {
   id: number
@@ -29,13 +29,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+  const pathname = usePathname()
 
   // 处理401错误，跳转到登录页面
   const handle401Error = () => {
     setUser(null)
-    const currentPath = window.location.pathname
-    if (currentPath !== '/login') {
-      router.push(`/login?redirect=${encodeURIComponent(currentPath)}`)
+    if (typeof window !== 'undefined' && pathname !== '/login') {
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`)
     }
   }
 
@@ -59,25 +59,30 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  // 全局fetch拦截器
-  const originalFetch = window.fetch
-  const interceptedFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
-    const response = await originalFetch(input, init)
-    if (response.status === 401) {
-      handle401Error()
+  useEffect(() => {
+    // 只在客户端设置全局fetch拦截器
+    if (typeof window !== 'undefined') {
+      const originalFetch = window.fetch
+      const interceptedFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+        const response = await originalFetch(input, init)
+        if (response.status === 401) {
+          handle401Error()
+        }
+        return response
+      }
+      
+      // 设置全局fetch拦截器
+      window.fetch = interceptedFetch
+      
+      // 清理函数
+      return () => {
+        window.fetch = originalFetch
+      }
     }
-    return response
-  }
+  }, [])
 
   useEffect(() => {
-    // 设置全局fetch拦截器
-    window.fetch = interceptedFetch
     checkAuth()
-    
-    // 清理函数
-    return () => {
-      window.fetch = originalFetch
-    }
   }, [])
 
   const login = async (username: string, password: string): Promise<boolean> => {
