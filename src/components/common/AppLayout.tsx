@@ -34,11 +34,7 @@ const menuItems: MenuItem[] = [
     icon: <UserOutlined />,
     label: '用户管理',
   },
-  {
-    key: '/menu',
-    icon: <MenuOutlined />,
-    label: '菜单管理',
-  },
+  {    key: '/recipes',    icon: <MenuOutlined />,    label: '菜单管理',  },
   {
     key: '/finance',
     icon: <DollarOutlined />,
