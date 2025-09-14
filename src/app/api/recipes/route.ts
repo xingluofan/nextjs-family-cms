@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { RecipeService, CreateRecipeData } from '@/lib/services/recipeService';
+import { requireAuth } from '@/lib/auth/withAuth';
 
 // GET /api/recipes - 获取菜品列表（支持筛选）
-export async function GET(request: NextRequest) {
+async function getRecipes(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     
@@ -40,7 +41,7 @@ export async function GET(request: NextRequest) {
 }
 
 // POST /api/recipes - 创建新菜品
-export async function POST(request: NextRequest) {
+async function createRecipe(request: NextRequest) {
   try {
     const body = await request.json();
     
@@ -104,3 +105,7 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+// 导出认证保护的API函数
+export const GET = requireAuth(getRecipes);
+export const POST = requireAuth(createRecipe);

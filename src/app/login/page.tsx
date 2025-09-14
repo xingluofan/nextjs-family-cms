@@ -1,9 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Form, Input, Button, Card, message, Typography, Space } from 'antd'
+import { Form, Input, Button, Card, Typography, Space } from 'antd'
 import { UserOutlined, LockOutlined, LoginOutlined } from '@ant-design/icons'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useAuth } from '@/contexts/AuthContext'
 
 const { Title, Text } = Typography
 
@@ -18,30 +19,27 @@ export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirectPath = searchParams.get('redirect') || '/'
+  const { login, isAuthenticated } = useAuth()
+
+  // 如果已经登录，直接跳转
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push(redirectPath)
+    }
+  }, [isAuthenticated, router, redirectPath])
 
   const handleLogin = async (values: LoginFormData) => {
     setLoading(true)
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      })
-
-      const result = await response.json()
-
-      if (result.success) {
-        message.success('登录成功')
-        // 登录成功后重定向
-        router.push(redirectPath)
-      } else {
-        message.error(result.error || '登录失败')
+      const success = await login(values.username, values.password)
+      if (success) {
+        // 登录成功后延迟跳转，让用户看到成功提示
+        setTimeout(() => {
+          router.push(redirectPath)
+        }, 1000)
       }
     } catch (error) {
-      console.error('登录失败:', error)
-      message.error('登录失败，请稍后重试')
+      console.error('登录过程中发生错误:', error)
     } finally {
       setLoading(false)
     }

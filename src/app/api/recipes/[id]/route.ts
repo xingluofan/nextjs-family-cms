@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { RecipeService, UpdateRecipeData } from '@/lib/services/recipeService';
+import { requireAuth } from '@/lib/auth/withAuth';
 
 interface RouteParams {
   params: Promise<{
@@ -8,7 +9,7 @@ interface RouteParams {
 }
 
 // GET /api/recipes/[id] - 获取单个菜品详情
-export async function GET(request: NextRequest, { params }: RouteParams) {
+async function getRecipe(request: NextRequest, { params }: RouteParams) {
   try {
     const { id: idParam } = await params;
     const id = parseInt(idParam);
@@ -54,7 +55,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 // PUT /api/recipes/[id] - 更新菜品
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+async function updateRecipe(request: NextRequest, { params }: RouteParams) {
   try {
     const { id: idParam } = await params;
     const id = parseInt(idParam);
@@ -141,7 +142,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 // DELETE /api/recipes/[id] - 删除菜品
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+async function deleteRecipe(request: NextRequest, { params }: RouteParams) {
   try {
     const { id: idParam } = await params;
     const id = parseInt(idParam);
@@ -186,3 +187,8 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     );
   }
 }
+
+// 导出认证保护的API函数
+export const GET = requireAuth(getRecipe);
+export const PUT = requireAuth(updateRecipe);
+export const DELETE = requireAuth(deleteRecipe);

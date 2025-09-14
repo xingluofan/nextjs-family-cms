@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { RecipeService } from '@/lib/services/recipeService';
+import { requireAuth } from '@/lib/auth/withAuth';
 
 // GET /api/recipes/categories - 获取所有品类标签
-export async function GET() {
+async function getRecipeCategories() {
   try {
     const categories = await RecipeService.getAllCategories();
     
@@ -23,3 +24,6 @@ export async function GET() {
     );
   }
 }
+
+// 导出认证保护的API函数
+export const GET = requireAuth(getRecipeCategories);

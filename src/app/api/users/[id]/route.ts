@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getUserById, updateUser, deleteUser, isUsernameExists, isEmailExists } from '@/lib/users/service'
 import { validateUsername, validatePassword, validateEmail } from '@/lib/users/auth'
+import { requireAuth } from '@/lib/auth/withAuth'
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -9,7 +10,7 @@ interface RouteParams {
 /**
  * GET /api/users/[id] - 获取单个用户
  */
-export async function GET(request: NextRequest, { params }: RouteParams) {
+async function getUserHandler(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params
     const userId = parseInt(id)
@@ -54,7 +55,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 /**
  * PUT /api/users/[id] - 更新用户
  */
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+async function updateUserHandler(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params
     const userId = parseInt(id)
@@ -171,7 +172,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 /**
  * DELETE /api/users/[id] - 删除用户
  */
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+async function deleteUserHandler(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params
     const userId = parseInt(id)
@@ -216,3 +217,8 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     )
   }
 }
+
+// 导出认证保护的API函数
+export const GET = requireAuth(getUserHandler)
+export const PUT = requireAuth(updateUserHandler)
+export const DELETE = requireAuth(deleteUserHandler)

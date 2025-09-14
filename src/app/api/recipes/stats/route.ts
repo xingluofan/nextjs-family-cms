@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { RecipeService } from '@/lib/services/recipeService';
+import { requireAuth } from '@/lib/auth/withAuth';
 
 // GET /api/recipes/stats - 获取菜品统计信息
-export async function GET() {
+async function getRecipeStats() {
   try {
     const stats = await RecipeService.getRecipeStats();
     
@@ -23,3 +24,6 @@ export async function GET() {
     );
   }
 }
+
+// 导出认证保护的API函数
+export const GET = requireAuth(getRecipeStats);

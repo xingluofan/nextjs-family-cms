@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createUser, getAllUsers, isUsernameExists, isEmailExists } from '@/lib/users/service'
 import { validateUsername, validatePassword, validateEmail } from '@/lib/users/auth'
+import { requireAuth } from '@/lib/auth/withAuth'
 
 /**
  * GET /api/users - 获取所有用户
  */
-export async function GET() {
+async function getUsers() {
   try {
     const users = await getAllUsers()
     return NextResponse.json({
@@ -27,7 +28,7 @@ export async function GET() {
 /**
  * POST /api/users - 创建新用户
  */
-export async function POST(request: NextRequest) {
+async function createUserHandler(request: NextRequest) {
   try {
     const body = await request.json()
     const { username, password, email, name } = body
@@ -125,3 +126,7 @@ export async function POST(request: NextRequest) {
     )
   }
 }
+
+// 导出认证保护的API函数
+export const GET = requireAuth(getUsers)
+export const POST = requireAuth(createUserHandler)
