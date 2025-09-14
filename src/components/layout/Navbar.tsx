@@ -15,8 +15,19 @@ export default function Navbar() {
   const router = useRouter()
 
   const handleLogout = async () => {
-    await logout()
-    router.push('/login')
+    console.log('🚪 [Navbar] 用户点击退出登录按钮:', {
+      user: user?.username,
+      timestamp: new Date().toISOString()
+    })
+    
+    try {
+      await logout()
+      console.log('🔄 [Navbar] 退出登录完成，准备跳转到登录页')
+      router.push('/login')
+      console.log('✅ [Navbar] 跳转到登录页命令已发送')
+    } catch (error) {
+      console.error('❌ [Navbar] 退出登录流程异常:', error)
+    }
   }
 
   const userMenuItems: MenuProps['items'] = [
@@ -68,7 +79,13 @@ export default function Navbar() {
             color: '#1890ff',
             cursor: 'pointer',
           }}
-          onClick={() => router.push('/')}
+          onClick={() => {
+            console.log('🏠 [Navbar] 用户点击系统标题，跳转到首页:', {
+              user: user?.username,
+              timestamp: new Date().toISOString()
+            })
+            router.push('/')
+          }}
         >
           家庭食谱管理系统
         </div>

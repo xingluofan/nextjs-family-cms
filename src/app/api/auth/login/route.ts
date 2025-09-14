@@ -3,7 +3,11 @@ import { verifyPassword } from '@/lib/users/auth'
 import { getUserByUsernameWithPassword } from '@/lib/users/service'
 import jwt from 'jsonwebtoken'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
+const JWT_SECRET = process.env.JWT_SECRET
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required')
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -46,26 +50,14 @@ export async function POST(request: NextRequest) {
     }
 
     // 生成JWT token
-    console.log('[DEBUG] 生成JWT Token:', {
-      userId: user.id,
-      username: user.username,
-      jwtSecret: JWT_SECRET?.substring(0, 10) + '...',
-      nodeEnv: process.env.NODE_ENV
-    })
-    
     const token = jwt.sign(
       {
         userId: user.id,
         username: user.username,
       },
-      JWT_SECRET,
+      JWT_SECRET!,
       { expiresIn: '7d' }
     )
-    
-    console.log('[DEBUG] Token生成成功:', {
-      tokenLength: token.length,
-      tokenPreview: token.substring(0, 20) + '...'
-    })
 
     // 返回成功响应
     const response = NextResponse.json({
@@ -90,11 +82,6 @@ export async function POST(request: NextRequest) {
       path: '/',
       // 在生产环境中不设置domain，让浏览器自动处理
     }
-    
-    console.log('[DEBUG] 设置Cookie:', {
-      cookieOptions,
-      tokenLength: token.length
-    })
     
     response.cookies.set('auth-token', token, cookieOptions)
 

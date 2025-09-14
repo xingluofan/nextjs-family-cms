@@ -50,13 +50,27 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const [collapsed, setCollapsed] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
-  const { isAuthenticated, loading } = useAuth()
+  const { isAuthenticated, loading, user } = useAuth()
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken()
 
   const handleMenuClick = ({ key }: { key: string }) => {
-    router.push(key)
+    console.log('🔍 [菜单点击] 用户点击菜单项:', {
+      menuKey: key,
+      currentPath: pathname,
+      isAuthenticated,
+      user: user?.username,
+      timestamp: new Date().toISOString()
+    })
+    
+    try {
+      console.log('🚀 [路由跳转] 开始跳转到:', key)
+      router.push(key)
+      console.log('✅ [路由跳转] 跳转命令已发送')
+    } catch (error) {
+      console.error('❌ [路由跳转] 跳转失败:', error)
+    }
   }
 
   // 如果正在加载认证状态，显示加载指示器
