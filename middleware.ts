@@ -5,7 +5,8 @@ import { isAuthenticated } from '@/lib/auth/middleware'
 // 需要认证的路由路径
 const protectedPaths = [
   '/users',
-  '/recipes',
+  '/menu',
+  '/finance',
   '/api/users',
   '/api/recipes',
 ]
