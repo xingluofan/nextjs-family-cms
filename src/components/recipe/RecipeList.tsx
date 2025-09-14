@@ -17,7 +17,6 @@ import {
   Typography,
   Divider,
   InputNumber,
-  Tooltip,
 } from 'antd';
 import {
   EditOutlined,

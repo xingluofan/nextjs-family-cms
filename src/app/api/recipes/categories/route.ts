@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { RecipeService } from '@/lib/services/recipeService';
 
 // GET /api/recipes/categories - 获取所有品类标签
