@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Layout, Menu, Button, Space, Avatar, Dropdown, Typography } from 'antd'
+import { Layout, Button, Space, Avatar, Dropdown, Typography } from 'antd'
 import { UserOutlined, LogoutOutlined } from '@ant-design/icons'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'

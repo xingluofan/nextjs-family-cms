@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Table, Card, Space, Tag, message, Button, Popconfirm, Modal } from 'antd'
+import { Table, Card, Space, Tag, message, Button, Popconfirm } from 'antd'
 import { UserOutlined, ReloadOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import type { UserResponse } from '@/lib/users/service'

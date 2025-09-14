@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
 import { message } from 'antd'
 import { useRouter, usePathname } from 'next/navigation'
 
@@ -32,7 +32,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const pathname = usePathname()
 
   // 处理401错误，跳转到登录页面
-  const handle401Error = () => {
+  const handle401Error = useCallback(() => {
     if (process.env.NODE_ENV === 'development') {
       console.log('🚨 [AuthContext] 检测到401错误，处理未授权访问:', {
         currentPath: pathname,
@@ -53,10 +53,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
       router.push(redirectUrl)
     }
-  }
+  }, [pathname, router, user?.username])
 
   // 检查用户是否已登录
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     if (process.env.NODE_ENV === 'development') {
       console.log('🔍 [AuthContext] 开始检查认证状态:', {
         currentPath: pathname,
@@ -111,7 +111,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         console.log('🏁 [AuthContext] 认证检查完成，loading状态已更新')
       }
     }
-  }
+  }, [pathname, handle401Error])
 
   useEffect(() => {
     // 只在客户端设置全局fetch拦截器
@@ -133,11 +133,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         window.fetch = originalFetch
       }
     }
-  }, [])
+  }, [handle401Error])
 
   useEffect(() => {
     checkAuth()
-  }, [])
+  }, [checkAuth])
 
   const login = async (username: string, password: string): Promise<boolean> => {
     if (process.env.NODE_ENV === 'development') {

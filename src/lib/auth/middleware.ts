@@ -21,7 +21,7 @@ export function verifyToken(token: string): AuthUser | null {
   try {
     const decoded = jwt.verify(token, JWT_SECRET!) as AuthUser
     return decoded
-  } catch (error) {
+  } catch {
     return null
   }
 }
