@@ -2,15 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { RecipeService, UpdateRecipeData } from '@/lib/services/recipeService';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 // GET /api/recipes/[id] - 获取单个菜品详情
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    const id = parseInt(params.id);
+    const { id: idParam } = await params;
+    const id = parseInt(idParam);
     
     if (isNaN(id)) {
       return NextResponse.json(
@@ -55,7 +56,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 // PUT /api/recipes/[id] - 更新菜品
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
-    const id = parseInt(params.id);
+    const { id: idParam } = await params;
+    const id = parseInt(idParam);
     
     if (isNaN(id)) {
       return NextResponse.json(
@@ -141,7 +143,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 // DELETE /api/recipes/[id] - 删除菜品
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
-    const id = parseInt(params.id);
+    const { id: idParam } = await params;
+    const id = parseInt(idParam);
     
     if (isNaN(id)) {
       return NextResponse.json(

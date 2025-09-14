@@ -6,7 +6,6 @@ import {
   List,
   Tag,
   Button,
-  Space,
   Input,
   Select,
   Row,
@@ -18,6 +17,7 @@ import {
   Typography,
   Divider,
   InputNumber,
+  Tooltip,
 } from 'antd';
 import {
   EditOutlined,
@@ -113,7 +113,7 @@ export default function RecipeList({ onEdit, onDelete, refreshTrigger }: RecipeL
     if (refreshTrigger) {
       fetchRecipes(filters);
     }
-  }, [refreshTrigger]);
+  }, [refreshTrigger, filters]);
 
   // 搜索处理
   const handleSearch = (value: string) => {

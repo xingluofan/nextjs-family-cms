@@ -7,8 +7,6 @@ import RecipeForm from '@/components/recipe/RecipeForm';
 import RecipeList from '@/components/recipe/RecipeList';
 import { CreateRecipeData, UpdateRecipeData, Recipe } from '@/lib/services/recipeService';
 
-const { TabPane } = Tabs;
-
 export default function RecipesPage() {
   const [activeTab, setActiveTab] = useState('list');
   const [refreshTrigger, setRefreshTrigger] = useState(0);

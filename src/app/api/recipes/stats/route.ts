@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { RecipeService } from '@/lib/services/recipeService';
 
 // GET /api/recipes/stats - 获取菜品统计信息
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const stats = await RecipeService.getRecipeStats();
     
