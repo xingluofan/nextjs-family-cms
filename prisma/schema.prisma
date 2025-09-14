@@ -23,16 +23,18 @@ model User {
   @@map("users")
 }
 
-// 菜单模型（预留）
+// 菜单模型
 model Recipe {
   id          Int      @id @default(autoincrement())
-  title       String
-  description String?
-  ingredients String[]
-  steps       String[]
+  title       String   // 菜名
+  description String?  // 菜品描述
+  ingredients String[] // 食材列表
+  steps       String[] // 制作步骤
   cookTime    Int?     // 烹饪时间（分钟）
-  difficulty  String?  // 难度等级
-  createdBy   Int
+  difficulty  String?  // 难度等级：简单、中等、困难
+  categories  String[] // 品类标签：如凉菜、东北菜、川菜等
+  servings    Int?     // 份量（几人份）
+  createdBy   Int      // 创建者用户ID
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
