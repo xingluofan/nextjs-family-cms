@@ -21,7 +21,9 @@ export async function GET() {
       },
     })
   } catch (error) {
-    console.error('数据库连接失败:', error)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('数据库连接失败:', error)
+    }
     return NextResponse.json(
       {
         success: false,

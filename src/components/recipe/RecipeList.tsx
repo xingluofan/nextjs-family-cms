@@ -80,8 +80,10 @@ export default function RecipeList({ onEdit, onDelete, refreshTrigger }: RecipeL
         message.error(data.message || '获取菜品列表失败');
       }
     } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('获取菜品列表失败:', error);
+      }
       message.error('获取菜品列表失败');
-      console.error('获取菜品列表失败:', error);
     } finally {
       setLoading(false);
     }
@@ -97,7 +99,9 @@ export default function RecipeList({ onEdit, onDelete, refreshTrigger }: RecipeL
         setCategories(data.data);
       }
     } catch (error) {
-      console.error('获取品类标签失败:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('获取品类标签失败:', error);
+      }
     }
   };
 

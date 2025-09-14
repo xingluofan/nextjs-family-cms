@@ -39,22 +39,32 @@ export default function Home() {
   const router = useRouter()
 
   const handleCardClick = (key: string, disabled?: boolean) => {
-    console.log('🎯 [首页] 模块卡片点击:', {
-      moduleKey: key,
-      disabled: !!disabled,
-      timestamp: new Date().toISOString()
-    })
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🎯 [首页] 模块卡片点击:', {
+        moduleKey: key,
+        disabled: !!disabled,
+        timestamp: new Date().toISOString()
+      })
+    }
     
     if (!disabled) {
       try {
-        console.log('🚀 [首页] 开始跳转到模块:', key)
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🚀 [首页] 开始跳转到模块:', key)
+        }
         router.push(key)
-        console.log('✅ [首页] 路由跳转命令已发送')
+        if (process.env.NODE_ENV === 'development') {
+          console.log('✅ [首页] 路由跳转命令已发送')
+        }
       } catch (error) {
-        console.error('❌ [首页] 路由跳转失败:', error)
+        if (process.env.NODE_ENV === 'development') {
+          console.error('❌ [首页] 路由跳转失败:', error)
+        }
       }
     } else {
-      console.log('⚠️ [首页] 模块已禁用，跳过跳转:', key)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('⚠️ [首页] 模块已禁用，跳过跳转:', key)
+      }
     }
   }
 

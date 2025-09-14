@@ -29,8 +29,10 @@ export default function UserList({ refreshTrigger, onEdit }: UserListProps) {
         message.error(result.error || '获取用户列表失败')
       }
     } catch (error) {
-      console.error('获取用户列表失败:', error)
-      message.error('获取用户列表失败，请稍后重试')
+      if (process.env.NODE_ENV === 'development') {
+        console.error('获取用户列表失败:', error)
+      }
+      message.error('获取用户列表失败')
     } finally {
       setLoading(false)
     }
@@ -50,8 +52,10 @@ export default function UserList({ refreshTrigger, onEdit }: UserListProps) {
         message.error(result.error || '删除用户失败')
       }
     } catch (error) {
-      console.error('删除用户失败:', error)
-      message.error('删除用户失败，请稍后重试')
+      if (process.env.NODE_ENV === 'development') {
+        console.error('删除用户失败:', error)
+      }
+      message.error('删除用户失败')
     }
   }
 

@@ -13,7 +13,9 @@ async function getRecipeStats() {
       message: '获取菜品统计成功',
     });
   } catch (error) {
-    console.error('获取菜品统计失败:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('获取菜品统计失败:', error);
+    }
     return NextResponse.json(
       {
         success: false,

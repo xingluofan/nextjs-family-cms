@@ -41,7 +41,9 @@ async function getUserHandler(request: NextRequest, { params }: RouteParams) {
       data: user,
     })
   } catch (error) {
-    console.error('获取用户失败:', error)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('获取用户失败:', error)
+    }
     return NextResponse.json(
       {
         success: false,
@@ -158,7 +160,9 @@ async function updateUserHandler(request: NextRequest, { params }: RouteParams) 
       message: '用户更新成功',
     })
   } catch (error) {
-    console.error('更新用户失败:', error)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('更新用户失败:', error)
+    }
     return NextResponse.json(
       {
         success: false,
@@ -207,7 +211,9 @@ async function deleteUserHandler(request: NextRequest, { params }: RouteParams) 
       message: '用户删除成功',
     })
   } catch (error) {
-    console.error('删除用户失败:', error)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('删除用户失败:', error)
+    }
     return NextResponse.json(
       {
         success: false,

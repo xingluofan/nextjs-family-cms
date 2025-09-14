@@ -64,7 +64,9 @@ export class RecipeService {
       });
       return recipe as Recipe;
     } catch (error) {
-      console.error('创建菜品失败:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('创建菜品失败:', error);
+      }
       throw new Error('创建菜品失败');
     }
   }
@@ -109,7 +111,9 @@ export class RecipeService {
       });
       return recipes as Recipe[];
     } catch (error) {
-      console.error('获取菜品列表失败:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('获取菜品列表失败:', error);
+      }
       throw new Error('获取菜品列表失败');
     }
   }
@@ -122,7 +126,9 @@ export class RecipeService {
       });
       return recipe as Recipe | null;
     } catch (error) {
-      console.error('获取菜品详情失败:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('获取菜品详情失败:', error);
+      }
       throw new Error('获取菜品详情失败');
     }
   }
@@ -136,7 +142,9 @@ export class RecipeService {
       });
       return recipe as Recipe;
     } catch (error) {
-      console.error('更新菜品失败:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('更新菜品失败:', error);
+      }
       throw new Error('更新菜品失败');
     }
   }
@@ -148,7 +156,9 @@ export class RecipeService {
         where: { id },
       });
     } catch (error) {
-      console.error('删除菜品失败:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('删除菜品失败:', error);
+      }
       throw new Error('删除菜品失败');
     }
   }
@@ -166,7 +176,9 @@ export class RecipeService {
       const uniqueCategories = [...new Set(allCategories)];
       return uniqueCategories.sort();
     } catch (error) {
-      console.error('获取品类标签失败:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('获取品类标签失败:', error);
+      }
       throw new Error('获取品类标签失败');
     }
   }
@@ -194,7 +206,9 @@ export class RecipeService {
         })),
       };
     } catch (error) {
-      console.error('获取菜品统计失败:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('获取菜品统计失败:', error);
+      }
       throw new Error('获取菜品统计失败');
     }
   }

@@ -15,18 +15,26 @@ export default function Navbar() {
   const router = useRouter()
 
   const handleLogout = async () => {
-    console.log('🚪 [Navbar] 用户点击退出登录按钮:', {
-      user: user?.username,
-      timestamp: new Date().toISOString()
-    })
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🚪 [Navbar] 用户点击退出登录按钮:', {
+        user: user?.username,
+        timestamp: new Date().toISOString()
+      })
+    }
     
     try {
       await logout()
-      console.log('🔄 [Navbar] 退出登录完成，准备跳转到登录页')
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔄 [Navbar] 退出登录完成，准备跳转到登录页')
+      }
       router.push('/login')
-      console.log('✅ [Navbar] 跳转到登录页命令已发送')
+      if (process.env.NODE_ENV === 'development') {
+        console.log('✅ [Navbar] 跳转到登录页命令已发送')
+      }
     } catch (error) {
-      console.error('❌ [Navbar] 退出登录流程异常:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('❌ [Navbar] 退出登录流程异常:', error)
+      }
     }
   }
 
@@ -80,10 +88,12 @@ export default function Navbar() {
             cursor: 'pointer',
           }}
           onClick={() => {
-            console.log('🏠 [Navbar] 用户点击系统标题，跳转到首页:', {
-              user: user?.username,
-              timestamp: new Date().toISOString()
-            })
+            if (process.env.NODE_ENV === 'development') {
+              console.log('🏠 [Navbar] 用户点击系统标题，跳转到首页:', {
+                user: user?.username,
+                timestamp: new Date().toISOString()
+              })
+            }
             router.push('/')
           }}
         >

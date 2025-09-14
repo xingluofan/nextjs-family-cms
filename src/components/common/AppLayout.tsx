@@ -56,20 +56,28 @@ export default function AppLayout({ children }: AppLayoutProps) {
   } = theme.useToken()
 
   const handleMenuClick = ({ key }: { key: string }) => {
-    console.log('🔍 [菜单点击] 用户点击菜单项:', {
-      menuKey: key,
-      currentPath: pathname,
-      isAuthenticated,
-      user: user?.username,
-      timestamp: new Date().toISOString()
-    })
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 [菜单点击] 用户点击菜单项:', {
+        menuKey: key,
+        currentPath: pathname,
+        isAuthenticated,
+        user: user?.username,
+        timestamp: new Date().toISOString()
+      })
+    }
     
     try {
-      console.log('🚀 [路由跳转] 开始跳转到:', key)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🚀 [路由跳转] 开始跳转到:', key)
+      }
       router.push(key)
-      console.log('✅ [路由跳转] 跳转命令已发送')
+      if (process.env.NODE_ENV === 'development') {
+        console.log('✅ [路由跳转] 跳转命令已发送')
+      }
     } catch (error) {
-      console.error('❌ [路由跳转] 跳转失败:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('❌ [路由跳转] 跳转失败:', error)
+      }
     }
   }
 

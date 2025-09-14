@@ -28,7 +28,9 @@ async function getRecipes(request: NextRequest) {
       message: '获取菜品列表成功',
     });
   } catch (error) {
-    console.error('获取菜品列表失败:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('获取菜品列表失败:', error);
+    }
     return NextResponse.json(
       {
         success: false,
@@ -94,7 +96,9 @@ async function createRecipe(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('创建菜品失败:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('创建菜品失败:', error);
+    }
     return NextResponse.json(
       {
         success: false,

@@ -19,7 +19,9 @@ export async function POST() {
 
     return response
   } catch (error) {
-    console.error('登出失败:', error)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('登出失败:', error)
+    }
     return NextResponse.json(
       {
         success: false,

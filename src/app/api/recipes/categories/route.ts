@@ -13,7 +13,9 @@ async function getRecipeCategories() {
       message: '获取品类标签成功',
     });
   } catch (error) {
-    console.error('获取品类标签失败:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('获取品类标签失败:', error);
+    }
     return NextResponse.json(
       {
         success: false,

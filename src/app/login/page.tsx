@@ -37,7 +37,9 @@ export default function LoginPage() {
         // 不需要手动跳转，让useEffect来处理
       }
     } catch (error) {
-      console.error('登录过程中发生错误:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('登录过程中发生错误:', error)
+      }
     } finally {
       setLoading(false)
     }

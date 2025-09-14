@@ -130,7 +130,9 @@ export default function RecipeForm({
       }
     } catch (error) {
       message.error('保存失败，请重试');
-      console.error('保存菜品失败:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('保存菜品失败:', error);
+      }
     }
   };
 

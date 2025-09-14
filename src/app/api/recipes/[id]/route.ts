@@ -42,7 +42,9 @@ async function getRecipe(request: NextRequest, { params }: RouteParams) {
       message: '获取菜品详情成功',
     });
   } catch (error) {
-    console.error('获取菜品详情失败:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('获取菜品详情失败:', error);
+    }
     return NextResponse.json(
       {
         success: false,
@@ -129,7 +131,9 @@ async function updateRecipe(request: NextRequest, { params }: RouteParams) {
       message: '更新菜品成功',
     });
   } catch (error) {
-    console.error('更新菜品失败:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('更新菜品失败:', error);
+    }
     return NextResponse.json(
       {
         success: false,
@@ -176,7 +180,9 @@ async function deleteRecipe(request: NextRequest, { params }: RouteParams) {
       message: '删除菜品成功',
     });
   } catch (error) {
-    console.error('删除菜品失败:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('删除菜品失败:', error);
+    }
     return NextResponse.json(
       {
         success: false,

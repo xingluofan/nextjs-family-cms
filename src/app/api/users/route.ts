@@ -14,7 +14,9 @@ async function getUsers() {
       data: users,
     })
   } catch (error) {
-    console.error('获取用户列表失败:', error)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('获取用户列表失败:', error)
+    }
     return NextResponse.json(
       {
         success: false,
@@ -116,7 +118,9 @@ async function createUserHandler(request: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
-    console.error('创建用户失败:', error)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('创建用户失败:', error)
+    }
     return NextResponse.json(
       {
         success: false,

@@ -37,7 +37,9 @@ export default function RecipesPage() {
       }
     } catch (error) {
       message.error('创建失败，请重试');
-      console.error('创建菜品失败:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('创建菜品失败:', error);
+      }
     } finally {
       setFormLoading(false);
     }
@@ -80,7 +82,9 @@ export default function RecipesPage() {
       }
     } catch (error) {
       message.error('更新失败，请重试');
-      console.error('更新菜品失败:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('更新菜品失败:', error);
+      }
     } finally {
       setFormLoading(false);
     }
@@ -103,7 +107,9 @@ export default function RecipesPage() {
       }
     } catch (error) {
       message.error('删除失败，请重试');
-      console.error('删除菜品失败:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('删除菜品失败:', error);
+      }
     }
   };
 

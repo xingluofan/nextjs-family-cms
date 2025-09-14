@@ -52,8 +52,10 @@ export default function CreateUserForm({ onSuccess }: CreateUserFormProps) {
         message.error(result.error || '创建用户失败')
       }
     } catch (error) {
-      console.error('创建用户失败:', error)
-      message.error('创建用户失败，请稍后重试')
+      if (process.env.NODE_ENV === 'development') {
+        console.error('创建用户失败:', error)
+      }
+      message.error('创建失败，请重试')
     } finally {
       setLoading(false)
     }
