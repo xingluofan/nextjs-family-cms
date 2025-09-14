@@ -46,6 +46,13 @@ export async function POST(request: NextRequest) {
     }
 
     // 生成JWT token
+    console.log('[DEBUG] 生成JWT Token:', {
+      userId: user.id,
+      username: user.username,
+      jwtSecret: JWT_SECRET?.substring(0, 10) + '...',
+      nodeEnv: process.env.NODE_ENV
+    })
+    
     const token = jwt.sign(
       {
         userId: user.id,
@@ -54,6 +61,11 @@ export async function POST(request: NextRequest) {
       JWT_SECRET,
       { expiresIn: '7d' }
     )
+    
+    console.log('[DEBUG] Token生成成功:', {
+      tokenLength: token.length,
+      tokenPreview: token.substring(0, 20) + '...'
+    })
 
     // 返回成功响应
     const response = NextResponse.json({
@@ -70,13 +82,21 @@ export async function POST(request: NextRequest) {
     })
 
     // 设置HTTP-only cookie
-    response.cookies.set('auth-token', token, {
+    const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'lax' as const, // 改为lax以支持跨页面导航
       maxAge: 7 * 24 * 60 * 60, // 7天
       path: '/',
+      // 在生产环境中不设置domain，让浏览器自动处理
+    }
+    
+    console.log('[DEBUG] 设置Cookie:', {
+      cookieOptions,
+      tokenLength: token.length
     })
+    
+    response.cookies.set('auth-token', token, cookieOptions)
 
     return response
   } catch (error) {

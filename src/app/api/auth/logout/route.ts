@@ -11,9 +11,10 @@ export async function POST() {
     response.cookies.set('auth-token', '', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'lax', // 改为lax以支持跨页面导航
       maxAge: 0, // 立即过期
       path: '/',
+      // 在生产环境中不设置domain，让浏览器自动处理
     })
 
     return response
