@@ -33,10 +33,8 @@ export default function LoginPage() {
     try {
       const success = await login(values.username, values.password)
       if (success) {
-        // 登录成功后延迟跳转，让用户看到成功提示
-        setTimeout(() => {
-          router.push(redirectPath)
-        }, 1000)
+        // 登录成功后，isAuthenticated状态会更新，useEffect会处理跳转
+        // 不需要手动跳转，让useEffect来处理
       }
     } catch (error) {
       console.error('登录过程中发生错误:', error)

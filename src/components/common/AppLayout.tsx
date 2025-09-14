@@ -35,7 +35,7 @@ const menuItems: MenuItem[] = [
     label: '用户管理',
   },
   {
-    key: '/recipes',
+    key: '/menu',
     icon: <MenuOutlined />,
     label: '菜单管理',
   },

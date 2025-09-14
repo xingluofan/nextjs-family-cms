@@ -2,9 +2,9 @@
 
 import React from 'react'
 import { Layout, Menu, Button, Space, Avatar, Dropdown, Typography } from 'antd'
-import { UserOutlined, LogoutOutlined, HomeOutlined, TeamOutlined, BookOutlined } from '@ant-design/icons'
+import { UserOutlined, LogoutOutlined } from '@ant-design/icons'
 import { useAuth } from '@/contexts/AuthContext'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import type { MenuProps } from 'antd'
 
 const { Header } = Layout
@@ -13,7 +13,6 @@ const { Text } = Typography
 export default function Navbar() {
   const { user, logout, isAuthenticated } = useAuth()
   const router = useRouter()
-  const pathname = usePathname()
 
   const handleLogout = async () => {
     await logout()
@@ -43,27 +42,7 @@ export default function Navbar() {
     },
   ]
 
-  const menuItems: MenuProps['items'] = [
-    {
-      key: '/',
-      icon: <HomeOutlined />,
-      label: '首页',
-    },
-    {
-      key: '/recipes',
-      icon: <BookOutlined />,
-      label: '食谱管理',
-    },
-    {
-      key: '/users',
-      icon: <TeamOutlined />,
-      label: '用户管理',
-    },
-  ]
-
-  const handleMenuClick = ({ key }: { key: string }) => {
-    router.push(key)
-  }
+  // 移除顶部重复的菜单项，只保留左侧导航
 
   if (!isAuthenticated) {
     return null // 未登录时不显示导航栏
@@ -87,25 +66,12 @@ export default function Navbar() {
             fontSize: '20px',
             fontWeight: 'bold',
             color: '#1890ff',
-            marginRight: '32px',
             cursor: 'pointer',
           }}
           onClick={() => router.push('/')}
         >
           家庭食谱管理系统
         </div>
-        
-        <Menu
-          mode="horizontal"
-          selectedKeys={[pathname]}
-          items={menuItems}
-          onClick={handleMenuClick}
-          style={{
-            border: 'none',
-            background: 'transparent',
-            minWidth: '300px',
-          }}
-        />
       </div>
 
       <Space>
