@@ -6,10 +6,8 @@ interface LoginLayoutProps {
 
 export default function LoginLayout({ children }: LoginLayoutProps) {
   return (
-    <html lang="zh-CN">
-      <body>
-        {children}
-      </body>
-    </html>
+    <div className="login-layout">
+      {children}
+    </div>
   )
 }
