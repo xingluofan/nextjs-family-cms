@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { message } from 'antd'
+import { useRouter } from 'next/navigation'
 
 interface User {
   id: number
@@ -27,6 +28,16 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
+
+  // 处理401错误，跳转到登录页面
+  const handle401Error = () => {
+    setUser(null)
+    const currentPath = window.location.pathname
+    if (currentPath !== '/login') {
+      router.push(`/login?redirect=${encodeURIComponent(currentPath)}`)
+    }
+  }
 
   // 检查用户是否已登录
   const checkAuth = async () => {
@@ -37,6 +48,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         if (result.success) {
           setUser(result.data.user)
         }
+      } else if (response.status === 401) {
+        // 处理401错误
+        handle401Error()
       }
     } catch (error) {
       console.error('检查认证状态失败:', error)
@@ -45,8 +59,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  // 全局fetch拦截器
+  const originalFetch = window.fetch
+  const interceptedFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+    const response = await originalFetch(input, init)
+    if (response.status === 401) {
+      handle401Error()
+    }
+    return response
+  }
+
   useEffect(() => {
+    // 设置全局fetch拦截器
+    window.fetch = interceptedFetch
     checkAuth()
+    
+    // 清理函数
+    return () => {
+      window.fetch = originalFetch
+    }
   }, [])
 
   const login = async (username: string, password: string): Promise<boolean> => {
@@ -61,11 +92,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       const result = await response.json()
 
-      if (result.success) {
+      if (response.ok && result.success) {
         setUser(result.data.user)
         message.success('登录成功')
         return true
       } else {
+        // 处理所有错误情况，包括500错误
         message.error(result.error || '登录失败')
         return false
       }
