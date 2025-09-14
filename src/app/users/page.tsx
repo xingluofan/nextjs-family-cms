@@ -1,17 +1,17 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Row, Col, Space, Typography, Divider } from 'antd'
+import { Row, Col, Space, Typography } from 'antd'
 import CreateUserForm from '@/components/users/CreateUserForm'
 import UserList from '@/components/users/UserList'
-import type { UserResponse } from '@/lib/users/service'
+
 
 const { Title } = Typography
 
 export default function UsersPage() {
   const [refreshTrigger, setRefreshTrigger] = useState(0)
 
-  const handleUserCreated = (user: UserResponse) => {
+  const handleUserCreated = () => {
     // 触发用户列表刷新
     setRefreshTrigger(prev => prev + 1)
   }
