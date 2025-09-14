@@ -1,151 +1,34 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/database/prisma'
 
+/**
+ * GET /api/check-db - 检查数据库连接
+ */
 export async function GET() {
-  const startTime = Date.now();
-  
   try {
-    console.log('[DEBUG] Starting database health check...');
+    // 尝试连接数据库并执行简单查询
+    await prisma.$queryRaw`SELECT 1`
     
-    // 检查环境变量
-    const envCheckStart = Date.now();
-    const envVars = {
-      STORAGE_URL: process.env.STORAGE_URL ? 'SET' : 'NOT_SET',
-      DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT_SET',
-      POSTGRES_URL: process.env.POSTGRES_URL ? 'SET' : 'NOT_SET'
-    };
-    
-    // 确定使用的连接变量
-    const connectionString = process.env.STORAGE_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL;
-    const selectedVariable = process.env.STORAGE_URL ? 'STORAGE_URL' : 
-                           process.env.DATABASE_URL ? 'DATABASE_URL' : 
-                           process.env.POSTGRES_URL ? 'POSTGRES_URL' : 'NONE';
-    
-    const startsWithPostgres = connectionString ? connectionString.startsWith('postgres') : false;
-    const envCheckMs = Date.now() - envCheckStart;
-    
-    console.log('[DEBUG] Environment check completed:', {
-      envVars,
-      selectedVariable,
-      startsWithPostgres,
-      envCheckMs
-    });
-    
-    if (!connectionString) {
-      return NextResponse.json({
-        ok: false,
-        error: 'No database connection string found',
-        env: envVars,
-        selectedVariable,
-        startsWithPostgres,
-        timings: { envCheckMs }
-      }, { status: 500 });
-    }
-    
-    // 测试数据库连接
-    const connectStart = Date.now();
-    let canConnect = false;
-    let connectError = null;
-    
-    try {
-      console.log('[DEBUG] Testing database connection...');
-      const result = await db.sql`SELECT 1 as test`;
-      canConnect = result.rows[0]?.test === 1;
-      console.log('[DEBUG] Connection test result:', canConnect);
-    } catch (error) {
-      connectError = error instanceof Error ? error.message : String(error);
-      console.error('[DEBUG] Connection test failed:', connectError);
-    }
-    
-    const connectMs = Date.now() - connectStart;
-    
-    if (!canConnect) {
-      return NextResponse.json({
-        ok: false,
-        error: connectError || 'Database connection failed',
-        env: envVars,
-        selectedVariable,
-        startsWithPostgres,
-        canConnect,
-        timings: { envCheckMs, connectMs }
-      }, { status: 500 });
-    }
-    
-    // 检查表是否存在
-    const tableCheckStart = Date.now();
-    let tableInfo = {};
-    
-    try {
-      console.log('[DEBUG] Checking menu_items table...');
-      
-      // 检查表是否存在
-      const tableExists = await db.sql`
-        SELECT EXISTS (
-          SELECT FROM information_schema.tables 
-          WHERE table_schema = 'public' 
-          AND table_name = 'menu_items'
-        )
-      `;
-      
-      const exists = tableExists.rows[0]?.exists;
-      
-      if (exists) {
-        // 如果表存在，获取行数
-        const countResult = await db.sql`SELECT COUNT(*) as count FROM menu_items`;
-        const rowCount = parseInt(countResult.rows[0]?.count || '0');
-        
-        tableInfo = {
-          menu_items: {
-            exists: true,
-            rowCount
-          }
-        };
-      } else {
-        tableInfo = {
-          menu_items: {
-            exists: false,
-            rowCount: 0
-          }
-        };
-      }
-      
-      console.log('[DEBUG] Table check completed:', tableInfo);
-    } catch (error) {
-      console.error('[DEBUG] Table check failed:', error);
-      tableInfo = {
-        menu_items: {
-          exists: false,
-          error: error instanceof Error ? error.message : String(error)
-        }
-      };
-    }
-    
-    const tableCheckMs = Date.now() - tableCheckStart;
-    const totalMs = Date.now() - startTime;
+    // 获取用户表的记录数
+    const userCount = await prisma.user.count()
     
     return NextResponse.json({
-      ok: true,
-      env: envVars,
-      selectedVariable,
-      startsWithPostgres,
-      canConnect,
-      table: tableInfo,
-      timings: {
-        envCheckMs,
-        connectMs,
-        tableCheckMs,
-        totalMs
-      }
-    });
-    
+      success: true,
+      message: '数据库连接正常',
+      data: {
+        userCount,
+        timestamp: new Date().toISOString(),
+      },
+    })
   } catch (error) {
-    const totalMs = Date.now() - startTime;
-    console.error('[DEBUG] Health check failed:', error);
-    
-    return NextResponse.json({
-      ok: false,
-      error: error instanceof Error ? error.message : String(error),
-      timings: { totalMs }
-    }, { status: 500 });
+    console.error('数据库连接失败:', error)
+    return NextResponse.json(
+      {
+        success: false,
+        error: '数据库连接失败',
+        details: error instanceof Error ? error.message : '未知错误',
+      },
+      { status: 500 }
+    )
   }
 }
